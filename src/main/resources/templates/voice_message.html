@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Voice Messages</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Voice Messages</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Sender</th>
+        <th>Recipient</th>
+        <th>Timestamp</th>
+        <th>Audio URL</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="message : ${voiceMessages}">
+        <td th:text="${message.id}"></td>
+        <td th:text="${message.sender}"></td>
+        <td th:text="${message.recipient}"></td>
+        <td th:text="${message.timestamp}"></td>
+        <td>
+            <audio controls>
+                <source th:src="${message.audioUrl}" type="audio/mpeg">
+            </audio>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Upload Voice Message</h2>
+
+<form id="uploadForm" enctype="multipart/form-data" action="#" method="post">
+    <label for="sender">Sender:</label>
+    <input type="text" id="sender" name="sender"><br><br>
+
+    <label for="recipient">Recipient:</label>
+    <input type="text" id="recipient" name="recipient"><br><br>
+
+    <label for="audioFile">Audio File:</label>
+    <input type="file" id="audioFile" name="audioFile"><br><br>
+
+    <button type="submit">Upload</button>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#uploadForm').submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var formData = new FormData(form[0]);
+
+            $.ajax({
+                url: '/voice-messages',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // Handle success response if needed
+                    console.log(response);
+                },
+                error: function(error) {
+                    // Handle error response if needed
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
